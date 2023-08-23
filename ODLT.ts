@@ -50,7 +50,6 @@ export function encode6358Transaction(omniverseTransaction: ERC6358TransactionDa
  */
  export function subscribe(p: ODLTSubscribeParams, cb: (omniverseTransaction: ODLTTransaction) => void) {
     return inscription.subscribe(p, (data: string, blockHash: string, txIndex: number) => {
-        console.debug('odlt', data, blockHash, txIndex);
         try {
             let originData = Buffer.from(data, 'hex').toString();
             let tx: ERC6358TransactionData = decode6358Transaction(originData);
