@@ -41,8 +41,8 @@ describe('omniverse', () => {
             chainId: 0,
             initiateSC: 'contract',
             from: 'from',
-            payload: Buffer.from('payload').toString('hex'),
-            signature: Buffer.from('signature').toString('hex'),
+            payload: 'payload',
+            signature: 'signature',
         });
     });
 
@@ -52,8 +52,8 @@ describe('omniverse', () => {
             chainId: 0,
             initiateSC: 'contract',
             from: 'from',
-            payload: Buffer.from('payload').toString('hex'),
-            signature: Buffer.from('signature').toString('hex'),
+            payload: 'payload',
+            signature: 'signature',
         });
 
         let tx = ODLT.decode6358Transaction(data);
@@ -61,8 +61,8 @@ describe('omniverse', () => {
         assert(tx.chainId == 0);
         assert(tx.initiateSC == 'contract');
         assert(tx.from == 'from');
-        assert(Buffer.from(tx.payload, 'hex').toString() == 'payload');
-        assert(Buffer.from(tx.signature, 'hex').toString() == 'signature');
+        assert(tx.payload == 'payload');
+        assert(tx.signature == 'signature');
     }, 10000);
 
     test('send 6358 transaction', async () => {
@@ -71,8 +71,8 @@ describe('omniverse', () => {
             chainId: 0,
             initiateSC: 'contract',
             from: 'from',
-            payload: Buffer.from('payload').toString('hex'),
-            signature: Buffer.from('signature').toString('hex'),
+            payload: 'payload',
+            signature: 'signature',
         });
         await utils.mine();
     }, 10000);
