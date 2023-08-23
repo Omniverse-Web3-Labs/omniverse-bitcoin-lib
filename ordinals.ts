@@ -4,6 +4,6 @@ export interface OrdsSubscribeParams extends bitcoin.SubscribeParams {
     
 }
 
-export function subscribe(p: OrdsSubscribeParams, cb: (txs: Array<Object>) => void) {
-    bitcoin.subscribe(p, cb);
+export function subscribe(p: OrdsSubscribeParams, cb: (block: any) => void) {
+    return bitcoin.subscribe(p, cb);
 }

@@ -14,7 +14,14 @@
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^29.5.3",
+    "ecpair": "^2.1.0",
     "jest": "^29.6.2",
+    "secp256k1": "^5.0.0",
+    "tiny-secp256k1": "^2.2.3",
+    "ts-jest": "^29.1.1",
     "ts-node": "^10.9.1"
+  },
+  "dependencies": {
+    "bitcoinjs-lib": "^6.1.3"
   }
 }

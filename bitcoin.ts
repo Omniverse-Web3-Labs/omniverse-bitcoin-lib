@@ -3,7 +3,7 @@ export interface SubscribeParams {
     interval?: number
 }
 
-const URL = 'https://btc.getblock.io/14716393-e3ef-4b56-8cd9-9f17fd193684/testnet/';
+let URL = 'https://btc.getblock.io/14716393-e3ef-4b56-8cd9-9f17fd193684/testnet/';
 
 async function request(method: String, params: Array<any>) {
     let body = {
@@ -11,17 +11,21 @@ async function request(method: String, params: Array<any>) {
         method,
         params
     }
+    
+    let headers = new Headers();
+    headers.set('Authorization', 'Basic ' + Buffer.from('a' + ":" + 'b').toString('base64'));
 
     let data = {
         method: 'POST',
-        body: JSON.stringify(body)
-    }
-    
+        body: JSON.stringify(body),
+        headers
+    };
+
     const response = await fetch(URL, data);
     
     const res = await response.json();
 
-    console.log(method, res);
+    // console.log(method, res);
 
     if (res) {
         return res.result;
@@ -31,25 +35,25 @@ async function request(method: String, params: Array<any>) {
 /**
  * Subscribe block updating
  */
-export function subscribe(p: SubscribeParams, cb: (txs: Array<Object>) => void) {
+export function subscribe(p: SubscribeParams, cb: (block: any) => void) {
     let height = p.from;
-    setInterval(async () => {
+    return setInterval(async () => {
         let curHeight = await getBlockCount();
-        if (curHeight >= height) {
+        while (curHeight >= height) {
             let blockHash = await getBlockHash(height);
             let info = await getBlock(blockHash, 2);
-            cb(info.tx);
+            cb(info);
             height++;
         }
     },
-    p.interval);
+    p.interval? p.interval: 1000);
 }
 
-export async function getBlockHash(height: number) {
+export async function getBlockHash(height: number): Promise<string> {
     return await request('getblockhash', [height]);
 }
 
-export async function getBlockCount() {
+export async function getBlockCount(): Promise<number> {
     return await request('getblockcount', []);
 }
 
@@ -57,10 +61,14 @@ export async function getBlock(blockhash: string, verbosity: number = 0) {
     return await request('getblock', [blockhash, verbosity]);
 }
 
-export async function getRawTransaction(txId: string) {
-    return await request('getrawtransaction', [txId, true]);
+export async function getRawTransaction(txId: string, blockHash: string) {
+    return await request('getrawtransaction', [txId, true, blockHash]);
 }
 
 export async function sendrawtransaction(signed: string) {
     return await request('sendrawtransaction', [signed]);
+}
+
+export function setProvider(url: string) {
+    URL = url;
 }
