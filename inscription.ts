@@ -1,4 +1,5 @@
 import * as ordinals from './ordinals';
+import * as bitcoin from './bitcoin';
 import fs from 'fs';
 import { execSync } from 'child_process';
 
@@ -15,7 +16,21 @@ export interface InscriptionSubscribeParams extends ordinals.OrdsSubscribeParams
 export function inscribe(data: string) {
     fs.writeFileSync('./.inscription.json', data);
     // Handle the return value here, confirm that it is executed correctly
-    let ret = execSync(`ord ${netParam} --bitcoin-rpc-pass=b --bitcoin-rpc-user=a wallet inscribe --fee-rate 2 .inscription.json`);
+    let ret;
+    switch (netType) {
+        case Network.Mainnet: {
+            let ret = execSync(`ord ${netParam} wallet inscribe --fee-rate 2 .inscription.json`);
+            break;
+        }
+        case Network.Regtest: {
+            let ret = execSync(`ord ${netParam} --bitcoin-rpc-pass=b --bitcoin-rpc-user=a wallet inscribe --fee-rate 2 .inscription.json`);
+            break;
+        }
+        case Network.Testnet: {
+            let ret = execSync(`ord ${netParam} --rpc-url ${bitcoin.getProvicer()} wallet inscribe --fee-rate 2 .inscription.json`);
+            break;
+        }
+    }
     return ret;
 }
 

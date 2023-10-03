@@ -72,3 +72,7 @@ export async function sendrawtransaction(signed: string) {
 export function setProvider(url: string) {
     URL = url;
 }
+
+export function getProvicer() {
+    return URL;
+}
