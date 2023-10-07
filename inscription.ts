@@ -27,7 +27,7 @@ export function inscribe(data: string) {
             break;
         }
         case Network.Testnet: {
-            let ret = execSync(`ord ${netParam} --rpc-url ${bitcoin.getProvicer()} wallet inscribe --fee-rate 2 .inscription.json`);
+            let ret = execSync(`ord ${netParam} --rpc-url ${bitcoin.getProvicer()} --bitcoin-rpc-pass=btc2023 --bitcoin-rpc-user=btc wallet inscribe --fee-rate 2 .inscription.json`);
             break;
         }
     }
