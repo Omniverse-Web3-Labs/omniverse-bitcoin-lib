@@ -4,6 +4,8 @@ export interface SubscribeParams {
 }
 
 let URL = 'https://btc.getblock.io/14716393-e3ef-4b56-8cd9-9f17fd193684/testnet/';
+let user = 'a';
+let password = 'b';
 
 async function request(method: String, params: Array<any>) {
     let body = {
@@ -13,7 +15,7 @@ async function request(method: String, params: Array<any>) {
     }
     
     let headers = new Headers();
-    headers.set('Authorization', 'Basic ' + Buffer.from('a' + ":" + 'b').toString('base64'));
+    headers.set('Authorization', 'Basic ' + Buffer.from(user + ":" + password).toString('base64'));
 
     let data = {
         method: 'POST',
@@ -67,6 +69,14 @@ export async function getRawTransaction(txId: string, blockHash: string) {
 
 export async function sendrawtransaction(signed: string) {
     return await request('sendrawtransaction', [signed]);
+}
+
+export function setUser(_user: string) {
+    user = _user;
+}
+
+export function setPassword(_password: string) {
+    password = _password;
 }
 
 export function setProvider(url: string) {
