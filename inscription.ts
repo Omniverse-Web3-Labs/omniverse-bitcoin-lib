@@ -86,7 +86,6 @@ export function parse(tx: any): string | undefined {
         let vin = tx.vin[i];
         if (vin.txinwitness && vin.txinwitness.length == 3) {
             let data = vin.txinwitness[1];
-            console.debug('vin.txinwitness[1]', vin.txinwitness[1]);
             if (data.substr(0, 2) == '20' &&
             data.substr(66, 54) == 'ac0063036f72640101106170706c69636174696f6e2f6a736f6e00' &&
             data.substr(-2, 2) == '68') {

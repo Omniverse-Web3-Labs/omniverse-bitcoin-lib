@@ -58,6 +58,7 @@ export function encode6358Transaction(omniverseTransaction: ERC6358TransactionDa
                 blockHash,
                 txIndex
             };
+            console.debug('ODLTTransaction', ret);
             cb(ret);
         }
         catch (e) {
