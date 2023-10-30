@@ -34,8 +34,13 @@ export function sendOmniverseTransaction(omniverseTransaction: ERC6358Transactio
 /**
  * Decode 6358 transaction from an inscription data
  */
-export function decode6358Transaction(data: string) {
-    return JSON.parse(data);
+export function decode6358Transaction(data: string) : undefined | ERC6358TransactionData {
+    let ret = JSON.parse(data);
+    if (ret.nonce && ret.chainId && ret.initiateSC && ret.from && ret.payload && ret.signature) {
+        return ret;
+    }
+
+    return undefined;
 }
 
 /**
@@ -52,7 +57,10 @@ export function encode6358Transaction(omniverseTransaction: ERC6358TransactionDa
     return inscription.subscribe(p, (data: string, blockHash: string, txIndex: number) => {
         try {
             let originData = Buffer.from(data, 'hex').toString();
-            let tx: ERC6358TransactionData = decode6358Transaction(originData);
+            let tx = decode6358Transaction(originData);
+            if (!tx) {
+                return;
+            }
             let ret: ODLTTransaction = {
                 tx,
                 blockHash,
