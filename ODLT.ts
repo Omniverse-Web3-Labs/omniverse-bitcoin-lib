@@ -53,10 +53,10 @@ export function sendOmniverseTransaction(omniverseTransaction: ERC6358Transactio
         op = 'burn';
     }
     let data: BRC6358TransactionData = {
-        p: 'brc-6358',
-        tick: 'SKYWALKER',
-        amt: payload.amount,
+        p: 'brc-20',
         op: op,
+        tick: 'SKYW',
+        amt: payload.amount,
         nonce: omniverseTransaction.nonce,
         chainId: omniverseTransaction.chainId,
         initiateSC: omniverseTransaction.initiateSC,
