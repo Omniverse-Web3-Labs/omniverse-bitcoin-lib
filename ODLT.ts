@@ -21,6 +21,19 @@ export interface ERC6358TransactionData {
     signature: string,
 }
 
+export interface BRC6358TransactionData {
+    p: string,
+    op: string,
+    tick: string,
+    amt: string,
+    nonce: bigint,
+    chainId: number,
+    initiateSC: string,
+    from: string,
+    payload: string,
+    signature: string,
+}
+
 export interface ODLTTransaction {
     tx: ERC6358TransactionData,
     blockHash: string,
@@ -28,7 +41,31 @@ export interface ODLTTransaction {
 }
 
 export function sendOmniverseTransaction(omniverseTransaction: ERC6358TransactionData) {
-    inscription.inscribe(encode6358Transaction(omniverseTransaction));
+    let payload = JSON.parse(omniverseTransaction.payload);
+    let op = '';
+    if (payload.op == 0) {
+        op = 'transfer';
+    }
+    else if (payload.op == 1) {
+        op = 'mint';
+    }
+    else if (payload.op == 2) {
+        op = 'burn';
+    }
+    let data: BRC6358TransactionData = {
+        p: 'brc-6358',
+        tick: 'SKYWALKER',
+        amt: payload.amount,
+        op: op,
+        nonce: omniverseTransaction.nonce,
+        chainId: omniverseTransaction.chainId,
+        initiateSC: omniverseTransaction.initiateSC,
+        from: omniverseTransaction.from,
+        payload: omniverseTransaction.payload,
+        signature: omniverseTransaction.signature,
+    };
+
+    inscription.inscribe(encode6358Transaction(data));
 }
 
 /**
@@ -46,7 +83,7 @@ export function decode6358Transaction(data: string) : undefined | ERC6358Transac
 /**
  * Encode 6358 transaction to an inscription data
  */
-export function encode6358Transaction(omniverseTransaction: ERC6358TransactionData) {
+export function encode6358Transaction(omniverseTransaction: BRC6358TransactionData) {
     return JSON.stringify(omniverseTransaction);
 }
 

@@ -19,15 +19,15 @@ export function inscribe(data: string) {
     let ret;
     switch (netType) {
         case Network.Mainnet: {
-            let ret = execSync(`ord ${netParam} wallet inscribe --fee-rate 2 .inscription.json`);
+            ret = execSync(`ord ${netParam} wallet inscribe --fee-rate 2 .inscription.json`);
             break;
         }
         case Network.Regtest: {
-            let ret = execSync(`ord ${netParam} --bitcoin-rpc-pass=b --bitcoin-rpc-user=a wallet inscribe --fee-rate 2 .inscription.json`);
+            ret = execSync(`ord ${netParam} --bitcoin-rpc-pass=b --bitcoin-rpc-user=a wallet inscribe --fee-rate 2 .inscription.json`);
             break;
         }
         case Network.Testnet: {
-            let ret = execSync(`ord ${netParam} --rpc-url ${bitcoin.getProvicer()} --bitcoin-rpc-pass=btc2023 --bitcoin-rpc-user=btc wallet inscribe --fee-rate 2 .inscription.json`);
+            ret = execSync(`ord ${netParam} --rpc-url ${bitcoin.getProvicer()} --bitcoin-rpc-pass=btc2023 --bitcoin-rpc-user=btc wallet inscribe --fee-rate 2 .inscription.json`);
             break;
         }
     }
