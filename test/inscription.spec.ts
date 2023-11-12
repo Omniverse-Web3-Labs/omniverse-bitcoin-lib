@@ -58,8 +58,8 @@ describe('inscription', () => {
 
     test('subscribe', async () => {
         let insc: string = '';
-        let interval = inscription.subscribe({from: 0}, (data: string) => {
-            insc = data;
+        let interval = inscription.subscribe({from: 0, interval: 1}, (data: string[]) => {
+            insc = data[0];
         });
         await utils.sleep(10);
         clearInterval(interval);

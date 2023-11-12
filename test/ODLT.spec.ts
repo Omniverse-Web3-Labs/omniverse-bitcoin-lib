@@ -37,6 +37,10 @@ describe('omniverse', () => {
 
     test('encode 6358 transaction', async () => {
         ODLT.encode6358Transaction({
+            p: 'brc-6358',
+            op: 'transfer',
+            tick: 'SKYWALKER',
+            amt: 'amt',
             nonce: BigInt(0),
             chainId: 0,
             initiateSC: 'contract',
@@ -48,6 +52,10 @@ describe('omniverse', () => {
 
     test('decode 6356 transaction', async () => {
         let data = ODLT.encode6358Transaction({
+            p: 'brc-6358',
+            op: 'transfer',
+            tick: 'SKYWALKER',
+            amt: 'amt',
             nonce: BigInt(0),
             chainId: 0,
             initiateSC: 'contract',
@@ -56,7 +64,7 @@ describe('omniverse', () => {
             signature: 'signature',
         });
 
-        let tx = ODLT.decode6358Transaction(data);
+        let tx = ODLT.decode6358Transaction(data)!;
         assert(tx.nonce == BigInt(0));
         assert(tx.chainId == 0);
         assert(tx.initiateSC == 'contract');
@@ -71,7 +79,11 @@ describe('omniverse', () => {
             chainId: 0,
             initiateSC: 'contract',
             from: 'from',
-            payload: 'payload',
+            payload: JSON.stringify({
+                op: 0,
+                amount: 100,
+                exData: 'address'
+            }),
             signature: 'signature',
         });
         await utils.mine();
@@ -79,10 +91,10 @@ describe('omniverse', () => {
 
     test('subscribe', async () => {
         let omniverseTx: ODLT.ERC6358TransactionData | undefined;
-        let interval = ODLT.subscribe({from: 0}, (tx: ODLT.ODLTTransaction) => {
-            omniverseTx = tx.tx;
+        let interval = ODLT.subscribe({from: 0, interval: 1}, (tx: ODLT.ODLTTransaction[]) => {
+            omniverseTx = tx[0].tx;
         });
-        await utils.sleep(10);
+        await utils.sleep(1);
         clearInterval(interval);
         console.log('omniverseTx', omniverseTx);
         assert(omniverseTx != undefined, 'omniverse transaction error');

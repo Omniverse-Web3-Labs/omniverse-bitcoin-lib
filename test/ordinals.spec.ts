@@ -22,7 +22,7 @@ describe('ordinals', () => {
     
     test('subscribe', async () => {
         let blockHeight;
-        let interval = ordinals.subscribe({from: 0}, (block) => {
+        let interval = ordinals.subscribe({from: 0, interval: 1}, (block) => {
             for (let i in block.tx) {
                 blockHeight = block.height;
             }

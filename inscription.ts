@@ -37,15 +37,17 @@ export function inscribe(data: string) {
 /**
  * Subscribe inscription transactions
  */
-export function subscribe(p: InscriptionSubscribeParams, cb: (data: string, blockHash: string, txIndex: number) => void) {
+export function subscribe(p: InscriptionSubscribeParams, cb: (data: string[], blockHash: string) => void) {
     return ordinals.subscribe(p, (block) => {
+        let rets = [];
         for(let i in block.tx) {
             let tx = block.tx[i];
             let ret = parse(tx);
             if (ret) {
-                cb(ret, block.hash, parseInt(i));
+                rets.push(ret);
             }
         }
+        cb(rets, block.hash);
     });
 }
 
