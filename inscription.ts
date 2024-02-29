@@ -37,7 +37,7 @@ export function inscribe(data: string) {
 /**
  * Subscribe inscription transactions
  */
-export function subscribe(p: InscriptionSubscribeParams, cb: (data: Array<any>[], blockHash: string) => void) {
+export function subscribe(p: InscriptionSubscribeParams, cb: (data: Array<any>[], blockHash: string, blockHeight: bigint) => void) {
     return ordinals.subscribe(p, (block) => {
         let rets = new Array<any>();
         for(let i in block.tx) {
@@ -52,7 +52,7 @@ export function subscribe(p: InscriptionSubscribeParams, cb: (data: Array<any>[]
                 rets.push(ret);
             }
         }
-        cb(rets, block.hash);
+        cb(rets, block.hash, block.height);
     });
 }
 
