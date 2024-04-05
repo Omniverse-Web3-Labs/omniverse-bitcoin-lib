@@ -72,6 +72,18 @@ export async function sendrawtransaction(signed: string) {
     return await request('sendrawtransaction', [signed]);
 }
 
+export async function estimateGas(blockNumber: number = 10) {
+    let feeRate = 10;
+    try {
+        feeRate = await request('estimatesmartfee', [blockNumber]);
+    }
+    catch (e) {
+        feeRate = 10;
+        console.log('feeRate lib', feeRate, e)
+    }
+    return feeRate;
+}
+
 export function setUser(_user: string) {
     user = _user;
 }
