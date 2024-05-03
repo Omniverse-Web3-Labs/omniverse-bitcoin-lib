@@ -91,8 +91,8 @@ export function encode6358Transaction(omniverseTransaction: BRC6358TransactionDa
 /**
  * Subscribe 6358 transactions
  */
- export function subscribe(p: ODLTSubscribeParams, cb: (omniverseTransactions: ODLTTransaction[]) => void) {
-    return inscription.subscribe(p, (datas: Array<any>, blockHash: string) => {
+ export function subscribe(p: ODLTSubscribeParams, cb: (omniverseTransactions: ODLTTransaction[]) => Promise<void>) {
+    return inscription.subscribe(p, async (datas: Array<any>, blockHash: string) => {
         try {
             let rets = [];
             for (let i in datas) {

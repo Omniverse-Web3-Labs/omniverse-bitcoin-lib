@@ -42,7 +42,7 @@ async function request(method: String, params: Array<any>) {
 /**
  * Subscribe block updating
  */
-export function subscribe(p: SubscribeParams, cb: (block: any) => void) {
+export function subscribe(p: SubscribeParams, cb: (block: any) => Promise<void>) {
     let height = p.from;
     return setInterval(async () => {
         let curHeight = await getBlockCount();
@@ -50,7 +50,7 @@ export function subscribe(p: SubscribeParams, cb: (block: any) => void) {
             console.log('block height', height);
             let blockHash = await getBlockHash(height);
             let info = await getBlock(blockHash, 2);
-            cb(info);
+            await cb(info);
             height++;
         }
     },
