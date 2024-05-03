@@ -37,17 +37,22 @@ export function inscribe(data: string) {
 /**
  * Subscribe inscription transactions
  */
-export function subscribe(p: InscriptionSubscribeParams, cb: (data: string[], blockHash: string) => void) {
+export function subscribe(p: InscriptionSubscribeParams, cb: (data: Array<any>[], blockHash: string, blockHeight: bigint) => void) {
     return ordinals.subscribe(p, (block) => {
-        let rets = [];
+        let rets = new Array<any>();
         for(let i in block.tx) {
             let tx = block.tx[i];
-            let ret = parse(tx);
-            if (ret) {
+            let data = parse(tx);
+            if (data.length == 2) {
+                let ret = {
+                    data: data[1] as string,
+                    txid: tx.txid,
+                    index: data[0] as number,
+                };
                 rets.push(ret);
             }
         }
-        cb(rets, block.hash);
+        cb(rets, block.hash, block.height);
     });
 }
 
@@ -83,7 +88,7 @@ function getStackData(data: string) {
     }
 }
 
-export function parse(tx: any): string | undefined {
+export function parse(tx: any): Array<any> {
     for (let i in tx.vin) {
         let vin = tx.vin[i];
         if (vin.txinwitness && vin.txinwitness.length == 3) {
@@ -93,12 +98,12 @@ export function parse(tx: any): string | undefined {
             data.substr(-2, 2) == '68') {
                 let subData = data.substr(120, data.length - 122);
                 let inscription = getStackData(subData);
-                return inscription;
+                return [i, inscription];
             }
         }
     }
 
-    return undefined;
+    return [];
 }
 
 export function setNetwork(net: Network) {
