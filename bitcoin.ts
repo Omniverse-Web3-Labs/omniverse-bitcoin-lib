@@ -16,6 +16,7 @@ async function request(method: String, params: Array<any>) {
     
     let headers = new Headers();
     headers.set('Authorization', 'Basic ' + Buffer.from(user + ":" + password).toString('base64'));
+    headers.set('Content-Type', 'text/plain');
 
     let data = {
         method: 'POST',
@@ -24,14 +25,18 @@ async function request(method: String, params: Array<any>) {
     };
 
     const response = await fetch(URL, data);
+    if (response.status == 200) {
+        const res = await response.json();
     
-    const res = await response.json();
-
-    // console.log(method, res);
-
-    if (res) {
-        return res.result;
+        if (res) {
+            return res.result;
+        }
     }
+    else {
+        console.log('Bitcoin request error', method, response.status, response.statusText);
+    }
+    
+    return null;
 }
 
 /**
@@ -69,17 +74,14 @@ export async function getRawTransaction(txId: string, blockHash: string) {
 }
 
 export async function sendrawtransaction(signed: string) {
+    console.log('sendrawtransaction', signed);
     return await request('sendrawtransaction', [signed]);
 }
 
 export async function estimateGas(blockNumber: number = 10) {
-    let feeRate = 10;
-    try {
-        feeRate = await request('estimatesmartfee', [blockNumber]);
-    }
-    catch (e) {
+    let feeRate = await request('estimatesmartfee', [blockNumber]);
+    if (feeRate.errors) {
         feeRate = 10;
-        console.log('feeRate lib', feeRate, e)
     }
     return feeRate;
 }
