@@ -42,9 +42,9 @@ async function request(method: String, params: Array<any>) {
 /**
  * Subscribe block updating
  */
-export function subscribe(p: SubscribeParams, cb: (block: any) => Promise<void>) {
+export async function subscribe(p: SubscribeParams, cb: (block: any) => Promise<void>) {
     let height = p.from;
-    return setInterval(async () => {
+    while (true) {
         let curHeight = await getBlockCount();
         while (curHeight >= height) {
             console.log('block height', height);
@@ -53,8 +53,8 @@ export function subscribe(p: SubscribeParams, cb: (block: any) => Promise<void>)
             await cb(info);
             height++;
         }
-    },
-    p.interval? p.interval: 10000);
+        await new Promise(resolve => setTimeout(resolve, p.interval? p.interval: 10000));
+    }
 }
 
 export async function getBlockHash(height: number): Promise<string> {
