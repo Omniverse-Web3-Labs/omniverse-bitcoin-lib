@@ -24,16 +24,21 @@ async function request(method: String, params: Array<any>) {
         headers
     };
 
-    const response = await fetch(URL, data);
-    if (response.status == 200) {
-        const res = await response.json();
-    
-        if (res) {
-            return res.result;
+    try {
+        const response = await fetch(URL, data);
+        if (response.status == 200) {
+            const res = await response.json();
+        
+            if (res) {
+                return res.result;
+            }
+        }
+        else {
+            console.log('Bitcoin request error', method, response.status, response.statusText);
         }
     }
-    else {
-        console.log('Bitcoin request error', method, response.status, response.statusText);
+    catch (err) {
+        console.log('err', err);
     }
     
     return null;
@@ -46,12 +51,16 @@ export async function subscribe(p: SubscribeParams, cb: (block: any) => Promise<
     let height = p.from;
     while (true) {
         let curHeight = await getBlockCount();
-        while (curHeight >= height) {
+        while (curHeight && curHeight >= height) {
             console.log('block height', height);
             let blockHash = await getBlockHash(height);
-            let info = await getBlock(blockHash, 2);
-            await cb(info);
-            height++;
+            if (blockHash) {
+                let info = await getBlock(blockHash, 2);
+                if (info) {
+                    await cb(info);
+                    height++;
+                }
+            }
         }
         await new Promise(resolve => setTimeout(resolve, p.interval? p.interval: 10000));
     }
