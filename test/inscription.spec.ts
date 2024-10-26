@@ -19,8 +19,8 @@ describe('inscription', () => {
 
     beforeAll(async () => {
         bitcoin.setProvider('http://127.0.0.1:18443')
-        // utils.launchNode();
-        // await utils.sleep(3);
+        utils.launchNode();
+        await utils.sleep(3);
         inscription.setNetwork(inscription.Network.Regtest);
         // clear data
         execSync('rm -rf ~/.local/share/ord/regtest');
@@ -58,11 +58,10 @@ describe('inscription', () => {
 
     test('subscribe', async () => {
         let insc: string = '';
-        let interval = inscription.subscribe({from: 0, interval: 1}, (data: string[]) => {
-            insc = data[0];
+        inscription.subscribe({from: 0, interval: 1}, async (data, blockHash, blockHeight) => {
+            insc = data[0].data;
         });
         await utils.sleep(10);
-        clearInterval(interval);
         console.log('insc', Buffer.from(insc, 'hex').toString());
         assert(Buffer.from(insc, 'hex').toString() == '{"text":"This is an inscription"}', 'inscription error');
     }, 20000);

@@ -101,14 +101,13 @@ describe('bitcoin', () => {
 
     test('subscribe', async () => {
         let blockHeight;
-        let interval = bitcoin.subscribe({from: 0, interval: 1}, (block) => {
+        bitcoin.subscribe({from: 0, interval: 1}, async (block) => {
             for (let i in block.tx) {
                 blockHeight = block.height;
             }
         });
         await utils.mine();
         let count = await bitcoin.getBlockCount();
-        clearInterval(interval);
         console.log('count', count, blockHeight);
         assert(count == blockHeight, 'the latest block not subscribed');
     });

@@ -37,7 +37,7 @@ export function inscribe(data: string) {
 /**
  * Subscribe inscription transactions
  */
-export function subscribe(p: InscriptionSubscribeParams, cb: (data: Array<any>[], blockHash: string, blockHeight: bigint) => Promise<void>) {
+export function subscribe(p: InscriptionSubscribeParams, cb: (data: Array<any>, blockHash: string, blockHeight: bigint) => Promise<void>) {
     return ordinals.subscribe(p, async (block) => {
         let rets = new Array<any>();
         for(let i in block.tx) {
