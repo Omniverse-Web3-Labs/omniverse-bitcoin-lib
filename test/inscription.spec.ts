@@ -58,7 +58,7 @@ describe('inscription', () => {
 
     test('subscribe', async () => {
         let insc: string = '';
-        let interval = inscription.subscribe({from: 0, interval: 1}, (data: string[]) => {
+        let interval = inscription.subscribe({from: 0, interval: 1}, async (data: Array<any>, blockHash: string, blockHeight: bigint) => {
             insc = data[0];
         });
         await utils.sleep(10);

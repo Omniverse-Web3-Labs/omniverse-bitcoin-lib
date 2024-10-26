@@ -91,7 +91,7 @@ describe('omniverse', () => {
 
     test('subscribe', async () => {
         let omniverseTx: ODLT.ERC6358TransactionData | undefined;
-        let interval = ODLT.subscribe({from: 0, interval: 1}, (tx: ODLT.ODLTTransaction[]) => {
+        let interval = ODLT.subscribe({from: 0, interval: 1}, async (tx: ODLT.ODLTTransaction[]) => {
             omniverseTx = tx[0].tx;
         });
         await utils.sleep(1);

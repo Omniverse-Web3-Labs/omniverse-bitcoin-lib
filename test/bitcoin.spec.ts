@@ -101,7 +101,7 @@ describe('bitcoin', () => {
 
     test('subscribe', async () => {
         let blockHeight;
-        let interval = bitcoin.subscribe({from: 0, interval: 1}, (block) => {
+        let interval = bitcoin.subscribe({from: 0, interval: 1}, async (block) => {
             for (let i in block.tx) {
                 blockHeight = block.height;
             }

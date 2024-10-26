@@ -44,14 +44,27 @@ async function request(method: String, params: Array<any>) {
  */
 export function subscribe(p: SubscribeParams, cb: (block: any) => Promise<void>) {
     let height = p.from;
+    let working = false;
     return setInterval(async () => {
-        let curHeight = await getBlockCount();
-        while (curHeight >= height) {
-            console.log('block height', height);
-            let blockHash = await getBlockHash(height);
-            let info = await getBlock(blockHash, 2);
-            await cb(info);
-            height++;
+        if (working) {
+            return;
+        }
+
+        try {
+            working = true;
+            let curHeight = await getBlockCount();
+            while (curHeight >= height) {
+                console.log('block height', height);
+                let blockHash = await getBlockHash(height);
+                let info = await getBlock(blockHash, 2);
+                await cb(info);
+                height++;
+            }
+            working = false;
+        }
+        catch (err) {
+            console.log('subscribe error', err);
+            working = false;
         }
     },
     p.interval? p.interval: 10000);
