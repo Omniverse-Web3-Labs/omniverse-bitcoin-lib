@@ -8,6 +8,7 @@ import assert from 'assert';
 const ECPair = ECPairFactory(tinysecp);
 
 describe('bitcoin', () => {
+    let bitcoind: any;
     let keypair = ECPair.makeRandom({ network: networks.regtest });
     const pubkey = keypair.publicKey;
     const prikey = keypair.privateKey;
@@ -20,15 +21,19 @@ describe('bitcoin', () => {
     let txid: string;
 
     beforeAll(async () => {
-        utils.launchNode();
-        await utils.sleep(3);
+        bitcoind = utils.launchNode();
+        await utils.sleep(1);
         bitcoin.setProvider('http://127.0.0.1:18443')
     },
     10000);
 
+    afterAll(() => {
+        bitcoind.kill('SIGKILL');
+    })
+
     test('faucet', async () => {
         utils.faucet(p2pkh.address!);
-        await utils.sleep(3);
+        await utils.sleep(1);
     });
 
     test('get block count', async () => {
@@ -101,13 +106,15 @@ describe('bitcoin', () => {
 
     test('subscribe', async () => {
         let blockHeight;
-        bitcoin.subscribe({from: 0, interval: 1}, async (block) => {
+        let interval = bitcoin.subscribe({from: 0, interval: 1}, async (block) => {
             for (let i in block.tx) {
                 blockHeight = block.height;
             }
         });
         await utils.mine();
         let count = await bitcoin.getBlockCount();
+        await utils.sleep(1);
+        clearInterval(interval);
         console.log('count', count, blockHeight);
         assert(count == blockHeight, 'the latest block not subscribed');
     });
