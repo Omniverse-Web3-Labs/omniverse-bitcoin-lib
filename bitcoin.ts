@@ -15,7 +15,9 @@ async function request(method: String, params: Array<any>) {
     }
     
     let headers = new Headers();
-    headers.set('Authorization', 'Basic ' + Buffer.from(user + ":" + password).toString('base64'));
+    if (user && password) {
+        headers.set('Authorization', 'Basic ' + Buffer.from(user + ":" + password).toString('base64'));
+    }
     headers.set('Content-Type', 'text/plain');
 
     let data = {
